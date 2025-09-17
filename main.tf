@@ -1,26 +1,34 @@
 terraform {
- required_providers {
-  kubernetes = {
-   sources = "hashicorp/kubernetes"
-   version = "~> 2.23"
+  required_providers {
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.23"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.13"
+    }
   }
-  helm = { 
-   source = "hashicorp/helm"
-   version = "~> 2.13"
-  }
- }
- backend "local" {
-  path = "terraform.tfstate"
- }
 }
 
 provider "kubernetes" {
- config_path = "~/.kube/config"
+  config_path = "~/.kube/config"
 }
 
 provider "helm" {
- kubernetes {
-  config_path = "~/.kube/config"
- }
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
 }
 
+module "namespaces" {
+  source = "./modules/namespaces"
+}
+
+module "apps" {
+  source = "./modules/apps"
+}
+
+module "helm" {
+  source = "./modules/helm"
+}
