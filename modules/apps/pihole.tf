@@ -1,7 +1,3 @@
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
-
 # Namespace
 resource "kubernetes_namespace" "pihole" {
   metadata {
@@ -171,7 +167,6 @@ resource "kubernetes_service" "pihole_web" {
       name        = "http"
       port        = 80
       target_port = 80
-      node_port   = 30081
     }
 
     type = "NodePort"
