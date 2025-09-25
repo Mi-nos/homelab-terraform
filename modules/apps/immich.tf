@@ -225,6 +225,7 @@ resource "kubernetes_deployment" "immich_server" {
       }
 
       spec {
+
         container {
           name  = "immich-server"
           image = "ghcr.io/immich-app/immich-server:release"
