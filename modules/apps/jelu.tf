@@ -47,6 +47,35 @@ resource "kubernetes_persistent_volume_claim" "jelu_pvc" {
     }
 }
 
+resource "kubernetes_config_map" "jelu_config" {
+  metadata {
+    name      = "jelu-config"
+    namespace = kubernetes_namespace.jelu.metadata[0].name
+  }
+
+  data = {
+    "application.yml" = <<-EOT
+      jelu:
+        metadataProviders:
+          - name: "google"
+            is-enabled: true
+            apiKey: "AIzaSyAKeWgH6ALDPhMBNNZqpPiH5ZrepdkpzSk"
+            order: -10
+          - name: "inventaireio"
+            is-enabled: true
+            order: 200000
+            config: "fr"
+          - name: "databazeknih"
+            is-enabled: true
+            order: 200001
+        metadata:
+          calibre:
+            path: /usr/bin/fetch-ebook-metadata
+            order: 50000
+    EOT
+  }
+}
+
 #dp
 resource "kubernetes_deployment" "jelu_server" {
     metadata {
@@ -117,8 +146,20 @@ resource "kubernetes_deployment" "jelu_server" {
                         mount_path = "/srv/jelu-data/files/imports"
                         sub_path = "files/imports"
                     }
+
+                    volume_mount {
+                        name       = "jelu-config"
+                        mount_path = "/config/application.yml"
+                        sub_path   = "application.yml"
+                    }
                 }
 
+                volume {
+                    name = "jelu-config"
+                    config_map {
+                    name = kubernetes_config_map.jelu_config.metadata[0].name
+                    }
+                }
                 volume { 
                     name = "jelu-data"
                     persistent_volume_claim {
