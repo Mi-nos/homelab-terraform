@@ -27,7 +27,9 @@ module "namespaces" {
 
 module "apps" {
   source = "./modules/apps"
+  google_api_key  = var.google_api_key
 }
+
 
 module "helm" {
   source = "./modules/helm"

@@ -47,6 +47,7 @@ resource "kubernetes_persistent_volume_claim" "jelu_pvc" {
     }
 }
 
+
 resource "kubernetes_config_map" "jelu_config" {
   metadata {
     name      = "jelu-config"
@@ -59,12 +60,12 @@ resource "kubernetes_config_map" "jelu_config" {
         metadataProviders:
           - name: "google"
             is-enabled: true
-            apiKey: "AIzaSyAKeWgH6ALDPhMBNNZqpPiH5ZrepdkpzSk"
-            order: -10
+            apiKey: ${var.google_api_key}
+            order: 200000
           - name: "inventaireio"
             is-enabled: true
-            order: 200000
-            config: "fr"
+            order: 200002
+            config: "pl"
           - name: "databazeknih"
             is-enabled: true
             order: 200001
